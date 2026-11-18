@@ -1,43 +1,54 @@
-# SEG3502 — Laboratoire 9 — Code de départ
+# Temperature converter API
 
-Ce projet contient l'API REST de conversion de température à sécuriser pour le laboratoire 9.
+This API converts temperatures between Celsius and Fahrenheit. Spring Security requires HTTP Basic authentication for every request. Users are stored in memory, with passwords hashed using BCrypt.
 
-Le code de départ **ne contient pas encore Spring Security**. Le travail demandé consiste à ajouter
-l'authentification **In Memory** et à exiger **Basic Authentication** pour toutes les requêtes de l'API.
+The demo accounts are `user1` / `pass1` and `user2` / `pass2`.
 
-## Démarrage
+Install Git and Java 21. Check that `java -version` shows Java 21, then clone the repository:
 
-Le projet utilise Java 21.
+```bash
+git clone https://github.com/AmaniM05/Lab9.git
+cd Lab9
+```
 
-Sous macOS/Linux :
+Start the API on macOS or Linux:
 
 ```bash
 ./gradlew bootRun
 ```
 
-Sous Windows :
+In Windows Command Prompt:
 
 ```text
 gradlew.bat bootRun
 ```
 
-Exemples de points de terminaison déjà disponibles :
+The API runs at `http://localhost:8080`. Both conversion routes accept GET requests:
 
 ```text
 GET http://localhost:8080/temperature-converter/celsius-fahrenheit/50
 GET http://localhost:8080/temperature-converter/fahrenheit-celsius/122
 ```
 
-## Travail demandé
+For example, send authenticated requests with curl:
 
-Conformément aux consignes du laboratoire :
+```bash
+curl -i -u user1:pass1 http://localhost:8080/temperature-converter/celsius-fahrenheit/50
+curl -i -u user2:pass2 http://localhost:8080/temperature-converter/fahrenheit-celsius/122
+```
 
-- ajouter Spring Security au projet;
-- configurer une authentification en mémoire;
-- créer au minimum :
-  - `user1` avec le mot de passe `pass1`;
-  - `user2` avec le mot de passe `pass2`;
-- exiger l'authentification Basic pour toutes les requêtes à l'API;
-- tester l'API avec Postman, Insomnia, Curl ou un outil similaire.
+These return `200 OK` with `122.0` and `50.0`, respectively. Requests without credentials or with an incorrect password return `401 Unauthorized`. In Windows PowerShell, use `curl.exe` in place of `curl`.
 
-Aucune interface utilisateur n'est demandée pour ce livrable.
+Run the tests on macOS or Linux:
+
+```bash
+./gradlew test
+```
+
+In Windows Command Prompt:
+
+```text
+gradlew.bat test
+```
+
+The tests check both conversion routes, access with each account, and rejection of missing or incorrect credentials. Conversion checks include negative and decimal temperatures.
